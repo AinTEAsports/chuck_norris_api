@@ -14,7 +14,6 @@ LANGUAGES_INFORMATIONS = {
         "english_name" : "french",
         "native_name" : "français",
         "path" : "/fr",
-        "help_path" : "/fr/help",
     },
     
     "en" : {
@@ -23,7 +22,6 @@ LANGUAGES_INFORMATIONS = {
         "english_name" : "english",
         "native_name" : "english",
         "path" : "/en",
-        "help_path" : "/en/help",
     }
 }
 
@@ -68,33 +66,29 @@ def get_languages_informations():
     return json.dumps(LANGUAGES_INFORMATIONS)
 
 
-@app.route("/en", methods=["GET"])
-def en() -> str :
-    response = requests.get("https://api.chucknorris.io/jokes/random")
-    joke = json.loads(response.text)["value"]
-    
-    return joke
-
-
-@app.route("/en/help", methods=["GET"])
-def en_help() -> str :
+@app.route("/help", methods=["GET"])
+def get_help() -> str :
     return ""
 
 
-@app.route("/fr", methods=["GET"])
-def fr() -> str :
-    with open("./chuck_jokes_fr.txt", 'r') as f:
-        jokes = f.readlines()
+
+@app.route("/<language>", methods=["GET"])
+def get_joke(language : str) -> str :
+    language = language.lower()
     
+    if language == "en":
+        response = requests.get("https://api.chucknorris.io/jokes/random")
+        joke = json.loads(response.text)["value"]
+        
+        return joke
+    
+    with open(f"jokes/{language}.txt", 'r') as f:
+        jokes = f.readlines()
+
     if not jokes:
         return ""
     
     return random.choice(jokes)
-
-
-@app.route("/fr/help", methods=["GET"])
-def fr_help() -> str :
-    return ""
 
 
 app.run(debug=True)
