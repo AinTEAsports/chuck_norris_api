@@ -77,13 +77,16 @@ def get_languages():
     return json.dumps(languages)
 
 
+@app.route("/languages_informations", defaults={"language": ""})
 @app.route("/languages_informations/<language>", methods=["GET"])
 def get_languages_informations(language : str = ""):
-    if language not in LANGUAGES_INFORMATIONS.keys():
-        return ""
+    language = language.lower()
     
     if not language:
         return json.dumps(LANGUAGES_INFORMATIONS)
+    
+    if language not in LANGUAGES_INFORMATIONS.keys():
+        return ""
     
     return json.dumps(LANGUAGES_INFORMATIONS[language])
 
@@ -110,7 +113,7 @@ def get_joke(language : str = "en") -> str :
     
     if not f"{language}.txt" in os.listdir("jokes/"):
         return ""
-    
+
     with open(f"jokes/{language}.txt", 'r') as f:
         jokes = f.readlines()
 
