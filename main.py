@@ -61,9 +61,15 @@ def get_languages():
     return json.dumps(languages)
 
 
-@app.route("/languages_informations", methods=["GET"])
-def get_languages_informations():
-    return json.dumps(LANGUAGES_INFORMATIONS)
+@app.route("/languages_informations/<language>", methods=["GET"])
+def get_languages_informations(language : str = ""):
+    if language not in LANGUAGES_INFORMATIONS.keys():
+        return ""
+    
+    if not language:
+        return json.dumps(LANGUAGES_INFORMATIONS)
+    
+    return json.dumps(LANGUAGES_INFORMATIONS[language])
 
 
 @app.route("/help", methods=["GET"])
