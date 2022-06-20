@@ -7,10 +7,40 @@ from flask import Flask
 
 app = Flask(__name__)
 
-AVAILIBLE_LANGUAGES = [
-    "FR",
-    "EN",
-]
+LANGUAGES_INFORMATIONS = {
+    "fr" : {
+        "upper" : "FR",
+        "lower" : "fr",
+        "english_name" : "french",
+        "native_name" : "français",
+        "path" : "/fr",
+        "help_path" : "/fr/help",
+    },
+    
+    "en" : {
+        "upper" : "EN",
+        "lower" : "en",
+        "english_name" : "english",
+        "native_name" : "english",
+        "path" : "/en",
+        "help_path" : "/en/help",
+    }
+}
+
+AVAILIBLE_LANGUAGES = [language for language in LANGUAGES_INFORMATIONS]
+
+CREDITS_INFORMATIONS = {
+    "aintea" : {
+        "discord" : "AinTea#0519",
+        "github" : "https://github.com/AinTEAsports",
+        "instagram" : None,
+        "twitter" : None,
+        "snapchat" : None,
+        "facebook" : None,
+        "spotify" : None,
+        "linkedin" : None,
+    }
+}
 
 
 @app.route("/")
@@ -25,6 +55,17 @@ def root():
             {' '.join(AVAILIBLE_LANGUAGES)}
         </b>
     </center>"""
+
+
+@app.route("/languages", methods=["GET"])
+def get_languages():
+    languages = {"languages" : AVAILIBLE_LANGUAGES}
+    return json.dumps(languages)
+
+
+@app.route("/languages_informations", methods=["GET"])
+def get_languages_informations():
+    return json.dumps(LANGUAGES_INFORMATIONS)
 
 
 @app.route("/en", methods=["GET"])
