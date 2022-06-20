@@ -16,7 +16,7 @@ LANGUAGES_INFORMATIONS = {
         "native_name" : "français",
         "path" : "/fr",
     },
-    
+
     "en" : {
         "upper" : "EN",
         "lower" : "en",
@@ -57,15 +57,16 @@ def root():
     </center>"""
 
 
+@app.route("/credits", defaults={"person": ""})
 @app.route("/credits/<person>")
-def get_credits(person : str = ""):
+def get_credits(person):
     person = person.lower()
-    
-    if not person in CREDITS_INFORMATIONS.keys():
-        return ""
     
     if not person:
         return json.dumps(CREDITS_INFORMATIONS)
+    
+    if not person in CREDITS_INFORMATIONS.keys():
+        return ""
     
     return json.dumps(CREDITS_INFORMATIONS[person])
 
@@ -102,6 +103,11 @@ def get_joke(language : str = "en") -> str :
         
         return joke
     
+    # We change directory to where the main file is stored, to be able to read the joke file
+    # I honestly had some problems with this, because I forgot python file was ran in the directory
+    # in which you ran the command, not in the directory where the file is.
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    
     if not f"{language}.txt" in os.listdir("jokes/"):
         return ""
     
@@ -110,7 +116,7 @@ def get_joke(language : str = "en") -> str :
 
     if not jokes:
         return ""
-    
+
     return random.choice(jokes)
 
 
