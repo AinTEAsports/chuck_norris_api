@@ -1,3 +1,4 @@
+import os
 import json
 import random
 import requests
@@ -25,10 +26,11 @@ LANGUAGES_INFORMATIONS = {
     }
 }
 
-AVAILIBLE_LANGUAGES = [language for language in LANGUAGES_INFORMATIONS]
+AVAILIBLE_LANGUAGES = [language.upper() for language in LANGUAGES_INFORMATIONS]
 
 CREDITS_INFORMATIONS = {
     "aintea" : {
+        "role" : "developer",
         "discord" : "AinTea#0519",
         "github" : "https://github.com/AinTEAsports",
         "instagram" : None,
@@ -50,24 +52,22 @@ def root():
         <br>
         
         <b>
-            {' '.join(AVAILIBLE_LANGUAGES)}
+            {' - '.join(AVAILIBLE_LANGUAGES)}
         </b>
     </center>"""
 
 
 @app.route("/credits/<person>")
 def get_credits(person : str = ""):
+    person = person.lower()
+    
+    if not person in CREDITS_INFORMATIONS.keys():
+        return ""
+    
     if not person:
-        return f"""<center>
-            Here are the credits of the people who made this API:
-            
-            <br>
-            <br>
-            
-            <b>
-                {' '.join(CREDITS_INFORMATIONS)}
-            </b>
-        </center>"""
+        return json.dumps(CREDITS_INFORMATIONS)
+    
+    return json.dumps(CREDITS_INFORMATIONS[person])
 
 
 @app.route("/languages", methods=["GET"])
@@ -92,9 +92,8 @@ def get_help() -> str :
     return ""
 
 
-
 @app.route("/joke/<language>", methods=["GET"])
-def get_joke(language : str) -> str :
+def get_joke(language : str = "en") -> str :
     language = language.lower()
     
     if language == "en":
@@ -102,6 +101,9 @@ def get_joke(language : str) -> str :
         joke = json.loads(response.text)["value"]
         
         return joke
+    
+    if not f"{language}.txt" in os.listdir("jokes/"):
+        return ""
     
     with open(f"jokes/{language}.txt", 'r') as f:
         jokes = f.readlines()
