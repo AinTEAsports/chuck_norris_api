@@ -55,6 +55,21 @@ def root():
     </center>"""
 
 
+@app.route("/credits/<person>")
+def get_credits(person : str = ""):
+    if not person:
+        return f"""<center>
+            Here are the credits of the people who made this API:
+            
+            <br>
+            <br>
+            
+            <b>
+                {' '.join(CREDITS_INFORMATIONS)}
+            </b>
+        </center>"""
+
+
 @app.route("/languages", methods=["GET"])
 def get_languages():
     languages = {"languages" : AVAILIBLE_LANGUAGES}
@@ -78,7 +93,7 @@ def get_help() -> str :
 
 
 
-@app.route("/<language>", methods=["GET"])
+@app.route("/joke/<language>", methods=["GET"])
 def get_joke(language : str) -> str :
     language = language.lower()
     
