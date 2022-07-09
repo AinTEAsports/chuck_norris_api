@@ -96,6 +96,7 @@ def get_help() -> str :
     return ""
 
 
+@app.route("/joke", defaults={"language": "en"})
 @app.route("/joke/<language>", methods=["GET"])
 def get_joke(language : str = "en") -> str :
     language = language.lower()
